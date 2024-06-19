@@ -13,8 +13,8 @@ const app = new Frog({
 })
 
 app.frame('/', (c) => {
-  const { buttonValue, status } = c
   return c.res({
+    action: '/signup',
     image: (
       <Box
         grow
@@ -23,17 +23,35 @@ app.frame('/', (c) => {
         padding="32"
       >
         <VStack gap="8">
-          <Heading>FrogUI 🐸</Heading>
+          <Heading>Frame Links ⛓️</Heading>
           <Text color="text200" size="20">
-            Build consistent frame experiences
+            Link in bio for Farcaster Frames
           </Text>
         </VStack>
       </Box>
     ),
+    intents: [<Button>Sign Up!</Button>],
+  })
+})
+
+app.frame('/signup', (c) => {
+  const { verified } = c
+  console.log('verified', verified)
+  return c.res({
+    image: (
+      <Box
+        grow
+        alignVertical="center"
+        backgroundColor="background"
+        padding="32"
+      >
+        <Heading>Signup Successful</Heading>
+      </Box>
+    ),
     intents: [
-      <Button value="apple">Apple</Button>,
-      <Button value="banana">Banana</Button>,
-      <Button value="mango">Mango</Button>,
+      <Button.Link href="https://localhost:3000">
+        View Your Profile
+      </Button.Link>,
     ],
   })
 })
