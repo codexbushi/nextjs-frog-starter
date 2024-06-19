@@ -35,48 +35,105 @@ app.frame('/', (c) => {
     ),
     intents: [
       <TextInput placeholder="Enter Link..." />,
-      <Button>Sign Up!</Button>,
+      <Button>Add Link</Button>,
     ],
   })
 })
 
 app.frame('/signup', async (c) => {
-  const { inputText } = c
+  const { inputText, frameData } = c
 
-  try {
-    await supabase.from('notes').upsert({ title: inputText })
+  if (frameData?.fid) {
+    try {
+      const { data: user } = await supabase
+        .from('notes')
+        .select('*')
+        .eq('fid', frameData.fid)
+        .single()
 
-    return c.res({
-      image: (
-        <Box
-          grow
-          alignVertical="center"
-          backgroundColor="background"
-          padding="32"
-        >
-          <Heading>Signup Successful</Heading>
-        </Box>
-      ),
-      intents: [
-        <Button.Link href="https://localhost:3000">
-          View Your Profile
-        </Button.Link>,
-      ],
-    })
-  } catch (error) {
-    return c.res({
-      image: (
-        <Box
-          grow
-          alignVertical="center"
-          backgroundColor="background"
-          padding="32"
-        >
-          <Heading>Error!</Heading>
-        </Box>
-      ),
-    })
+      if (!user) {
+        await supabase.from('notes').insert({
+          title: inputText,
+          fid: frameData?.fid,
+        })
+
+        return c.res({
+          image: (
+            <Box
+              grow
+              alignVertical="center"
+              backgroundColor="background"
+              padding="32"
+            >
+              <Heading>Welcome New User</Heading>
+            </Box>
+          ),
+          intents: [
+            <Button.Link href="https://localhost:3000">
+              View Your Profile
+            </Button.Link>,
+          ],
+        })
+      }
+
+      await supabase
+        .from('notes')
+        .update({
+          title: inputText,
+        })
+        .eq('fid', frameData?.fid)
+
+      return c.res({
+        image: (
+          <Box
+            grow
+            alignVertical="center"
+            backgroundColor="background"
+            padding="32"
+          >
+            <Heading>Link Updated!</Heading>
+          </Box>
+        ),
+        intents: [
+          <Button.Link href="https://localhost:3000">
+            View Your Profile
+          </Button.Link>,
+        ],
+      })
+    } catch (error) {
+      return c.res({
+        image: (
+          <Box
+            grow
+            alignVertical="center"
+            backgroundColor="background"
+            padding="32"
+          >
+            <Heading>Error ⚠️</Heading>
+            <Text color="text200" size="20">
+              Could Not Add Link
+            </Text>
+          </Box>
+        ),
+      })
+    }
   }
+
+  return c.res({
+    image: (
+      <Box
+        grow
+        alignVertical="center"
+        backgroundColor="background"
+        padding="32"
+      >
+        <Heading>Error ⚠️</Heading>
+        <Text color="text200" size="20">
+          Farcaster User ID Not Found
+        </Text>
+      </Box>
+    ),
+  })
 })
 
 devtools(app, { serveStatic })
