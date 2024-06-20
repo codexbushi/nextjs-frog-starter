@@ -45,17 +45,25 @@ app.frame('/signup', async (c) => {
 
   if (frameData?.fid) {
     try {
-      const { data: user } = await supabase
+      const { data: user, error: selectError } = await supabase
         .from('notes')
         .select('*')
         .eq('fid', frameData.fid)
         .single()
 
+      if (selectError) {
+        throw new Error(selectError.message)
+      }
+
       if (!user) {
-        await supabase.from('notes').insert({
+        const { error: insertError } = await supabase.from('notes').insert({
           title: inputText,
           fid: frameData?.fid,
         })
+
+        if (insertError) {
+          throw new Error(insertError.message)
+        }
 
         return c.res({
           image: (
@@ -76,12 +84,16 @@ app.frame('/signup', async (c) => {
         })
       }
 
-      await supabase
+      const { error: updateError } = await supabase
         .from('notes')
         .update({
           title: inputText,
         })
         .eq('fid', frameData?.fid)
+
+      if (updateError) {
+        throw new Error(updateError.message)
+      }
 
       return c.res({
         image: (
@@ -101,6 +113,7 @@ app.frame('/signup', async (c) => {
         ],
       })
     } catch (error) {
+      console.error(error)
       return c.res({
         image: (
           <Box
