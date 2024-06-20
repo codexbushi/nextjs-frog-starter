@@ -9,6 +9,7 @@ import { serveStatic } from 'frog/serve-static'
 import { Box, Heading, Text, VStack, vars } from './ui.js'
 
 const supabase = createSupabaseAdmin()
+const BASE_URL = 'http://localhost:3000'
 
 const app = new Frog({
   basePath: '/frame',
@@ -78,7 +79,7 @@ app.frame('/signup', async (c) => {
             </Box>
           ),
           intents: [
-            <Button.Link href="https://localhost:3000">
+            <Button.Link href={`${BASE_URL}/user/${frameData.fid}`}>
               View Your Profile
             </Button.Link>,
           ],
@@ -108,7 +109,7 @@ app.frame('/signup', async (c) => {
           </Box>
         ),
         intents: [
-          <Button.Link href="https://localhost:3000">
+          <Button.Link href={`${BASE_URL}/user/${frameData.fid}`}>
             View Your Profile
           </Button.Link>,
         ],
