@@ -1,14 +1,14 @@
 /** @jsxImportSource frog/jsx */
 
 /* eslint-disable react/jsx-key */
-import { createClient } from '@/utils/supabase/client'
+import { createSupabaseAdmin } from '@/utils/supabase/admin'
 import { Button, Frog, TextInput } from 'frog'
 import { devtools } from 'frog/dev'
 import { handle } from 'frog/next'
 import { serveStatic } from 'frog/serve-static'
 import { Box, Heading, Text, VStack, vars } from './ui.js'
 
-const supabase = createClient()
+const supabase = createSupabaseAdmin()
 
 const app = new Frog({
   basePath: '/frame',

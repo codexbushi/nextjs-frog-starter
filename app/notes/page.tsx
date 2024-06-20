@@ -1,8 +1,8 @@
-import { createClient } from '@/utils/supabase/server'
+import { createSupabaseServer } from '@/utils/supabase/server'
 import { addTodo } from './actions'
 
 export default async function Notes() {
-  const supabase = createClient()
+  const supabase = createSupabaseServer()
   const { data: notes } = await supabase.from('notes').select()
 
   return (

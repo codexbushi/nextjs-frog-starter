@@ -1,9 +1,9 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { createSupabaseServer } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-const supabase = createClient()
+const supabase = createSupabaseServer()
 
 export async function addTodo(formData: FormData) {
   const title = formData.get('title')
