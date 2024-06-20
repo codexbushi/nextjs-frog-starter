@@ -23,6 +23,8 @@ async function getFarcasterUser(fid: number): Promise<FarcasterUser> {
     (data) => {
       return data.messages.reduce((acc: FarcasterUser, message) => {
         if (isUserDataAddMessage(message)) {
+          // https://docs.farcaster.xyz/reference/hubble/httpapi/userdata
+
           // Profile Picture
           if (message.data.userDataBody.type === 1) {
             acc.pfp = message.data.userDataBody.value
