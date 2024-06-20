@@ -46,18 +46,19 @@ app.frame('/signup', async (c) => {
   if (frameData?.fid) {
     try {
       const { data: user, error: selectError } = await supabase
-        .from('notes')
-        .select('*')
+        .from('links')
+        .select()
         .eq('fid', frameData.fid)
-        .single()
+        .limit(1)
+        .maybeSingle()
 
       if (selectError) {
         throw new Error(selectError.message)
       }
 
       if (!user) {
-        const { error: insertError } = await supabase.from('notes').insert({
-          title: inputText,
+        const { error: insertError } = await supabase.from('links').insert({
+          website: inputText,
           fid: frameData?.fid,
         })
 
@@ -85,9 +86,9 @@ app.frame('/signup', async (c) => {
       }
 
       const { error: updateError } = await supabase
-        .from('notes')
+        .from('links')
         .update({
-          title: inputText,
+          website: inputText,
         })
         .eq('fid', frameData?.fid)
 
@@ -114,6 +115,7 @@ app.frame('/signup', async (c) => {
       })
     } catch (error) {
       console.error(error)
+
       return c.res({
         image: (
           <Box

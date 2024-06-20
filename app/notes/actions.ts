@@ -7,6 +7,11 @@ const supabase = createSupabaseServer()
 
 export async function addTodo(formData: FormData) {
   const title = formData.get('title')
-  await supabase.from('notes').upsert({ title })
+  const { error } = await supabase.from('links').upsert({ website: title })
+
+  if (error) {
+    console.error(error)
+  }
+
   revalidatePath('/notes')
 }
